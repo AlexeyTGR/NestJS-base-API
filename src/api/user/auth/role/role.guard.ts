@@ -1,8 +1,10 @@
-import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import {
+  Injectable,
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IAuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
-import UserEntity from '../../user.entity';
 import { JwtAuthGuard } from '../auth.guard';
 
 import { ROLES_KEY } from './role.decorator';
@@ -26,6 +28,11 @@ export class RolesGuard extends JwtAuthGuard {
     }
     const { user } = await context.switchToHttp().getRequest();
 
-    return requiredRoles.some((role) => user.role.includes(role));
+    const isAllowed = requiredRoles.some((role) => user.role.includes(role));
+    if (!isAllowed) {
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+    }
+
+    return;
   }
 }

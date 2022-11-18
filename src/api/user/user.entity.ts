@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 import * as typeorm from 'typeorm';
-import { UserRoleEnum } from './user.types';
+import { UserRoleEnum } from './auth/role/role.types';
 
 @typeorm.Entity()
 class UserEntity extends typeorm.BaseEntity {

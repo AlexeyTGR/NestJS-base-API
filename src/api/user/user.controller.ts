@@ -10,8 +10,8 @@ import {
   Inject,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   Req,
   UseGuards,
   UseInterceptors,
@@ -22,6 +22,8 @@ import UserEntity from './user.entity';
 import { CreateUserDto, UpdateNameDto } from './user.dto';
 import UserService from './user.service';
 import { JwtAuthGuard } from './auth/auth.guard';
+import { UserRoleEnum } from './auth/role/role.types';
+import { Roles } from './auth/role/role.decorator';
 
 @Controller('user')
 export class UserController {
@@ -54,8 +56,9 @@ export class UserController {
     return user;
   }
 
-  @Put('name')
+  @Patch('name')
   @UseGuards(JwtAuthGuard)
+  @Roles(UserRoleEnum.ADMIN)
   @UseInterceptors(ClassSerializerInterceptor)
   public updateName(
     @Body() body: UpdateNameDto,

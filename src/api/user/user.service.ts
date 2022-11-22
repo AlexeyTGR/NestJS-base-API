@@ -11,7 +11,12 @@ class UserService {
   private readonly repository: Repository<UserEntity>;
 
   public async getUser(id: number): Promise<UserEntity> {
-    return this.repository.findOneBy({ id });
+    const user = await this.repository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 
   public async getAllUsers(): Promise<UserEntity[]> {
@@ -30,16 +35,21 @@ class UserService {
 
   public async updateName(
     body: UpdateNameDto,
-    req: Request,
+    id: number,
   ): Promise<UserEntity> {
-    const user: UserEntity = <UserEntity>req.user;
+    const user = await this.repository.findOneBy({ id });
+    if (!user) {
+      throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
+    }
     user.name = body.name;
 
     return this.repository.save(user);
   }
 
   public async deleteUser(id: number): Promise<DeleteResult> {
-    return this.repository.delete(id);
+    const deletedUser = await this.repository.delete(id);
+
+    return deletedUser;
   }
 }
 

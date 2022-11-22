@@ -27,7 +27,15 @@ class AuthHelper {
   }
 
   public async validateUser(decoded: any): Promise<UserEntity> {
-    return this.repository.findOneBy(decoded.id);
+    const user = await this.repository.findOne({ where: { id: decoded.id } });
+    if (!user) {
+      throw new HttpException(
+        'Authorization error. User is not found',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    return user;
   }
 
   public generateToken(user: UserEntity): string {
@@ -35,9 +43,6 @@ class AuthHelper {
   }
 
   public isPasswordValid(password: string, userPassword: string): boolean {
-    console.log('password >', password);
-    console.log('userPassword >', userPassword);
-
     return bcrypt.compareSync(password, userPassword);
   }
 

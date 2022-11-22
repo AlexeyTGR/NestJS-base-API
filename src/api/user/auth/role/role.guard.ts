@@ -27,12 +27,15 @@ export class RolesGuard extends JwtAuthGuard {
       return true;
     }
     const { user } = await context.switchToHttp().getRequest();
+    if (!user) {
+      throw new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
+    }
 
     const isAllowed = requiredRoles.some((role) => user.role.includes(role));
     if (!isAllowed) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
 
-    return;
+    return isAllowed;
   }
 }

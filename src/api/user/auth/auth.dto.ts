@@ -1,7 +1,7 @@
 import { Trim } from 'class-sanitizer';
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
-export class SognInDto {
+export class SignInDto {
   @Trim()
   @IsEmail()
   public readonly email: string;

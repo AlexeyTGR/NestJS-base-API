@@ -20,10 +20,13 @@ import {
   ApiBody,
   ApiResponse,
   ApiNotFoundResponse,
+  ApiBadRequestResponse,
+  ApiForbiddenResponse,
+  ApiConflictResponse,
 } from '@nestjs/swagger';
 
 import UserEntity from './user.entity';
-import { UpdateNameDto } from './user.dto';
+import { UpdateUserDto } from './user.dto';
 import UserService from './user.service';
 import { JwtAuthGuard } from './auth/auth.guard';
 import { UserRoleEnum } from './auth/role/role.types';
@@ -75,11 +78,20 @@ export class UserController {
   }
 
   @ApiTags('User group')
-  @ApiOperation({ description: 'Update user name by user ID, admin only' })
+  @ApiOperation({ description: 'Update user data by user ID, admin only' })
   @ApiBody({
     schema: {
       properties: {
         name: {
+          type: 'string',
+        },
+        email: {
+          type: 'email',
+        },
+        password: {
+          type: 'string',
+        },
+        newPassword: {
           type: 'string',
         },
       },
@@ -102,15 +114,23 @@ export class UserController {
     status: 200,
   })
   @ApiNotFoundResponse({
-    status: 404,
     description: 'User is not found',
   })
+  @ApiBadRequestResponse({
+    description: 'Not enough data to change password',
+  })
+  @ApiForbiddenResponse({
+    description: 'Invalid password',
+  })
+  @ApiConflictResponse({
+    description: 'This email is already taken',
+  })
   @Patch(':id')
-  public updateName(
+  public update(
     @Param('id', ParseIntPipe) id: number,
-    @Body() body: UpdateNameDto,
+    @Body() body: UpdateUserDto,
   ): Promise<UserEntity> {
-    return this.service.updateName(body, id);
+    return this.service.update(body, id);
   }
 
   @ApiTags('User group')

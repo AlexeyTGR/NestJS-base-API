@@ -14,8 +14,20 @@ export class CreateUserDto {
   public password: string;
 }
 
-export class UpdateNameDto {
+export class UpdateUserDto {
   @IsString()
   @IsOptional()
   public readonly name?: string;
+
+  @IsEmail()
+  @IsOptional()
+  public readonly email?: string;
+
+  @IsString()
+  @IsOptional()
+  public readonly password?: string;
+
+  @IsString()
+  @IsOptional()
+  public readonly newPassword?: string;
 }

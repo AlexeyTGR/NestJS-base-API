@@ -33,5 +33,6 @@ import { RolesGuard } from './role/role.guard';
       useClass: RolesGuard,
     },
   ],
+  exports: [AuthHelper],
 })
 export class AuthModule {}
